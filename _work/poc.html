@@ -1,0 +1,98 @@
+<!doctype html>
+
+<title>POC: styletags / htmlmixed / mustache overlay</title>
+<meta charset="utf-8"/>
+<link rel="stylesheet" href="../lib/codemirror.css">
+<style>
+span.cm-m-xml.cm-tag.cm-tag-body {
+  color: red !important;
+}
+span.cm-m-xml.cm-tag.cm-tag-h1 {
+  color: hotpink !important;
+}
+span.cm-m-xml.cm-tag.cm-tag-form {
+  color: orange !important;
+}
+span.cm-m-xml.cm-tag.cm-tag-input {
+  color: aquamarine !important;
+}
+</style>
+<script src="../lib/codemirror.js"></script>
+<script src="../mode/xml/xml.js"></script>
+<script src="../addon/wrap/styletags.js"></script>
+<script src="../addon/mode/overlay.js"></script>
+
+<script src="../addon/selection/selection-pointer.js"></script>
+
+<script src="../mode/javascript/javascript.js"></script>
+<script src="../mode/css/css.js"></script>
+<script src="../mode/vbscript/vbscript.js"></script>
+<script src="../mode/htmlmixed/htmlmixed.js"></script>
+
+<style type="text/css">
+.CodeMirror {
+	border: 1px solid black; 
+}
+body,td,th {
+	font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+}
+.cm-mustache {
+	color: #0ca;
+}
+body {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+.CodeMirror {
+    height: initial !important;
+}	
+</style>
+
+<h2>styletags / htmlmixed / mustache overlay</h2>
+
+<form><textarea id="code" name="code">
+<html style="{{color}}">
+  <body>
+  </body>
+</html>
+</textarea></form>
+<script>
+// Define an extended mixed-mode that understands vbscript and
+// leaves mustache/handlebars embedded templates in html mode
+var mixedMode = {
+	name: "htmlmixed",
+	scriptTypes: [{matches: /\/x-handlebars-template|\/x-mustache/i,
+				   mode: null},
+				  {matches: /(text|application)\/(x-)?vb(a|script)/i,
+				   mode: "vbscript"}]
+};
+CodeMirror.defineMode("mustache", function(config, parserConfig) {
+  var mustacheOverlay = {
+    token: function(stream, state) {
+      var ch;
+      if (stream.match("{{")) {
+        while ((ch = stream.next()) != null)
+          if (ch == "}" && stream.next() == "}") {
+            stream.eat("}");
+            return "mustache";
+          }
+      }
+      while (stream.next() != null && !stream.match("{{", false)) {}
+      return null;
+    }
+  };
+//return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || "text/html"), mustacheOverlay);
+  return CodeMirror.overlayMode(CodeMirror.getMode(config, parserConfig.backdrop || mixedMode), mustacheOverlay);
+});
+var xmlMode = {
+	mode: {
+		name: "styletags", 
+		inner: "mustache"
+	},
+    htmlMode: true,
+	lineNumbers: true,
+	//showTrailingSpace: true,	//??
+    addModeClass: true
+}
+var editor = CodeMirror.fromTextArea(document.getElementById("code"), xmlMode);
+</script> 

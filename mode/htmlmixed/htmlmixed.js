@@ -150,3 +150,17 @@
 
   CodeMirror.defineMIME("text/html", "htmlmixed");
 });
+/*--------------------------------------------------------------------------------------------------
+LINT global references and defined variables not used here
+--------------------------------------------------------------------------------------------------*/
+/*global CodeMirror, 
+    define, require, exports, brackets, editor
+*/
+//. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .}
+(function () {
+	[ //global variables and functions defined but not used
+		define, require, exports, brackets, editor,
+		CodeMirror
+	]
+});
+//. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

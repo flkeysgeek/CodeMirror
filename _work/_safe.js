@@ -1,3 +1,23 @@
+	function prependMode(doc, mode) {
+		//return;  
+		var spec = doc.modeOption;
+		var name = (spec instanceof Object) ? spec.name : spec;
+		if (name != mode)
+			doc.modeOption = {
+				name: mode,
+				inner: spec
+			};
+		console.log('mode', doc.modeOption, doc);
+	}
+		var priorMode = config.mode || {name: '', inner: ''};
+		if (config.styletags 
+		&& priorMode.name != 'styletags' && priorMode.inner != 'styletags')
+		{
+			var parserConfig = {
+				name: 'styletags',
+				inner: 'htmlMode'
+			};
+		}
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -57,7 +77,7 @@ var xmlConfig = {
 
 CodeMirror.defineMode("xml", function(editorConf, config_) {
 
-  if (editorConf.styletags  //if styletags option and not yet wrapped, do now...
+  if (editorConf.styletags  //if styletags option and not yet wrapped...
   && (!(config_ instanceof Object) || !config_.styletagsAdded)
   && (!(editorConf.mode instanceof Object) || !editorConf.mode.styletags))
     return CodeMirror.getMode(editorConf, {name:'styletags', inner:config_} );
@@ -409,3 +429,4 @@ LINT global references and defined variables not used here
     define, require, exports, brackets, editor,
 CodeMirror]});
 //. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
